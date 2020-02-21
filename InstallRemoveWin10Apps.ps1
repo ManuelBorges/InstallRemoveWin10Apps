@@ -1,34 +1,36 @@
-# Open another ps1
+# ##################################################################################################################### #
+#                                                                                                                       #
+# [en] Notes: main script                                                                                               #
+#                                                                                                                       #
+# TODO: coments in [en] and [pt]                                                                                        #
+#                                                                                                                       #
+# ##################################################################################################################### #
+
+# Open another PS1 INLINE
 # credits: https://stackoverflow.com/questions/6816450/call-powershell-script-ps1-from-another-ps1-script-inside-powershell-ise
-
-#local path : $PSScriptRoot
-
-invoke-expression -Command "$($PSScriptRoot)\Untitled2.ps1"
+Invoke-Expression -Command "$($PSScriptRoot)\AdminScriptToGetInfoAndMore.ps1";
 
 Function instalaAppUser
 {
-    param([string]$appCaminho)
+    param([string]$caminhoDaAPP)
 
-    Write-Host "APP: $($appCaminho)"
-
-    If ( [string]::IsNullorEmpty($appCaminho) -Or [String]::IsNullOrWhiteSpace($appCaminho) )
+    If ( [string]::IsNullorEmpty($caminhoDaAPP) -Or [String]::IsNullOrWhiteSpace($caminhoDaAPP) )
     {
-        Write-Host "Funcao instalaAppUser tem um valor nulo ou vazio" -ForeGroundColor Red
-        pause
-        exit
+        Write-Host "Funcao tem um valor nulo ou vazio" -ForeGroundColor Red
+        Pause;  # to pause and alert
+        Exit;
     }
 
-    Add-AppxPackage -DisableDevelopmentMode -Register $appCaminho
+    Add-AppxPackage -DisableDevelopmentMode -Register $caminhoDaAPP
     
-    $appNome = $null
+    $caminhoDaAPP = $null
 }
 
-Write-Host $env:USERNAME
+# [en] some variables for better code handling
+$ficheiroTemp = "D:\TMP-Texto.txt"; # the file where the InstallLocation will be written to be used later by the user script
 
-
-foreach($line in [System.IO.File]::ReadLines("D:\TMP-Texto.txt")) {
+foreach($line in [System.IO.File]::ReadLines("$($ficheiroTemp)")) {
     $caminho = $line
-    Write-Host $caminho
     instalaAppUser -appCaminho $caminho
     Start-Sleep -Seconds 5
 }

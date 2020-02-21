@@ -4,18 +4,18 @@
 # a text file (line by line) so that after it can be read by the main script function. This is needed because a         #
 # limited user account does not have permissions to read such information.                                              #
 #                                                                                                                       #
-# TODO: coments in [en] and [pt]                                                                                                #
+# TODO: coments in [en] and [pt]                                                                                        #
 #                                                                                                                       #
 # ##################################################################################################################### #
 
 # [en] Restart script with admin powers (asks for Admin account and auth)
 # credits: somewhere on stackoverflow...
 If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) 
-    {
-        # TODO: In production version will add "-WindowStyle Hidden"
-        Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs;
-        Exit;
-    }
+{
+    # TODO: In production version will add "-WindowStyle Hidden"
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs;
+    Exit;
+}
 
 # [en] list of apps we want installed on our limited user account
 # the * is usefull for easier find app
@@ -37,72 +37,12 @@ $appsadd=@(
 $utilizadorRef = "confadmin"; # TODO: get current logged username (not the admin) to whom the apps will be installed
 $ficheiroTemp = "D:\TMP-Texto.txt"; # the file where the InstallLocation will be written to be used later by the user script
 
-# [en] empty working file
-Function emptyFicheiro
-{
-    Param([string]$ficheiro);
-    If ( [string]::IsNullorEmpty($ficheiro) -Or [String]::IsNullOrWhiteSpace($ficheiro) )
-    {
-        $ficheiro = $ficheiroTemp;
-    }
-    $null | Out-File -Force -Encoding UTF8 -FilePath $ficheiro;
-    $ficheiro = $null;
-    # TODO: if file ! exists
-}
+# [en] load module instead of load script for better integration, but no Intellisense in VSCode :(
+# credits for intellisense: https://www.reddit.com/r/PowerShell/comments/5yysft/for_anyone_writing_modules_in_vscode/ 
+Import-Module -Name "$PSScriptRoot\CommonPowerShellStuff.ps1"
+#. "$PSScriptRoot\CommonPowerShellStuff.ps1"
 
-# [en] delete temp file
-Function delFicheiro
-{
-    Param([string]$ficheiro);
-    If ( [string]::IsNullorEmpty($ficheiro) -Or [String]::IsNullOrWhiteSpace($ficheiro) )
-    {
-        $ficheiro = $ficheiroTemp;
-    }
-    # TODO: TUDO!!!
 
-    $ficheiro = $null;
-}
-
-Function permissoesFicheiro
-{
-    # Setup file ACL
-    # credits: https://blog.netwrix.com/2018/04/18/how-to-manage-file-system-acls-with-powershell-scripts/
-    # notes on ACL
-    # Access Right                          # Access Right's Name in PowerShell
-    # Full Control                          # FullControl
-    # Traverse Folder I Execute File        # ExecuteFile
-    # List Folder / Read Data               # ReadData
-    # Read Attributes                       # ReadAttributes
-    # Read Extended Attributes              # ReadExtendedAttributes
-    # Create Files / Write Data             # CreateFiles
-    # Create Folders / Append Data          # AppendData
-    # Write Attributes                      # WriteAttributes
-    # Write Extended Attributes             # WriteExtendedAttributes
-    # Delete Subfolders and Files           # DeleteSubdirectonesAndFiles
-    # Delete                                # Delete
-    # Read Permissions                      # ReadPermissions
-
-    Param ([string]$ficheiro, [string]$utilizador, [string]$permissoes);
-    If ( [string]::IsNullorEmpty($ficheiro) -Or [String]::IsNullOrWhiteSpace($ficheiro) )
-    {
-        $ficheiro = $ficheiroTemp;
-    }
-    If ( [string]::IsNullorEmpty($utilizador) -Or [String]::IsNullOrWhiteSpace($utilizador) )
-    {
-        $utilizador = $utilizadorRef;
-    }
-    If ( [string]::IsNullorEmpty($permissoes) -Or [String]::IsNullOrWhiteSpace($permissoes) )
-    {
-        $permissoes = "FullControl";
-    }
-    $permissoesFicheiro = Get-Acl $ficheiro
-    $novaPermissao = New-Object System.Security.AccessControl.FileSystemAccessRule("$($utilizador)","$($permissoes)","Allow")
-    $permissoesFicheiro.SetAccessRuleProtection($true,$true)
-    $permissoesFicheiro.SetAccessRule($novaPermissao)
-    $permissoesFicheiro | Set-Acl $ficheiro
-
-    $ficheiro = $utilizador = $permissoes = $null
-}
 
 # [en] 
 Function escreveInstallLocation
@@ -219,9 +159,9 @@ Function instalaAppsEDependencias
 }
 
 
-emptyFicheiro -ficheiro $ficheiroTemp
-foreach ($aplicacao in $appsadd) 
-{
+#emptyFicheiro -ficheiro $ficheiroTemp
+#foreach ($aplicacao in $appsadd) 
+#{
 #    $localizacao = (Get-AppxPackage -AllUsers -Name $aplicacao).InstallLocation
 #    If ( ! ([string]::IsNullorEmpty($localizacao) -Or [String]::IsNullOrWhiteSpace($localizacao)) )
 #    {
@@ -235,9 +175,10 @@ foreach ($aplicacao in $appsadd)
 #    }
     #Get-AppxPackage -allusers $aplicacao | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register “$($_.InstallLocation)\AppXManifest.xml”}
     #instalaAppsEDependencias -appNome $aplicacao 1
-    escreveInstallLocation -ficheiro $ficheiroTemp -appNome $aplicacao
-}
+#    escreveInstallLocation -ficheiro $ficheiroTemp -appNome $aplicacao
+#}
 
+Write-Host "Teste"
 pause
 
 
