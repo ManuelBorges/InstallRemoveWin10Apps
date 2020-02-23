@@ -3,8 +3,7 @@
 # [en] Notes: runs with Administrator powers and goes thru the apps we want to install, finds the path and writes it to #
 # a text file (line by line) so that after it can be read by the main script function. This is needed because a         #
 # limited user account does not have permissions to read such information.                                              #
-#                                                                                                                       #
-# TODO: coments in [en] and [pt]                                                                                        #
+# TODO: comments in [en] and [pt]                                                                                        #
 #                                                                                                                       #
 # ##################################################################################################################### #
 
@@ -13,12 +12,12 @@
 If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) 
 {
     # TODO: In production version will add "-WindowStyle Hidden"
-    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs;
-    Exit;
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Exit
 }
 
 # [en] list of apps we want installed on our limited user account
-# the * is usefull for easier find app
+# ? here we'll use this to grab the "installLocation"
 $appsadd=@(
 	"*WindowsCalculator*"
 	"*Windows.Photos*"
@@ -37,26 +36,28 @@ $appsadd=@(
 $utilizadorRef = "confadmin"; # TODO: get current logged username (not the admin) to whom the apps will be installed
 $ficheiroTemp = "D:\TMP-Texto.txt"; # the file where the InstallLocation will be written to be used later by the user script
 
-# [en] load module instead of load script for better integration, but no Intellisense in VSCode :(
+# [en] Import-Module instead of load script for better integration, but no direct Intellisense in VSCode :(
 # credits for intellisense: https://www.reddit.com/r/PowerShell/comments/5yysft/for_anyone_writing_modules_in_vscode/ 
 Import-Module -Name "$PSScriptRoot\CommonPowerShellStuff.ps1"
 #. "$PSScriptRoot\CommonPowerShellStuff.ps1"
 
-
+# notes on function params: 
+# https://stackoverflow.com/questions/4988226/how-do-i-pass-multiple-parameters-into-a-function-in-powershell/44731765#44731765
+# https://www.reddit.com/r/PowerShell/comments/73wi5e/how_to_write_a_script_that_takes_a_variable/ number of args
 
 # [en] 
 Function escreveInstallLocation
 {
-    Param([string]$ficheiro, [string]$appNome);
+    Param([string]$ficheiro,[string]$appNome)
     If ( [string]::IsNullorEmpty($appNome) -Or [String]::IsNullOrWhiteSpace($appNome) )
     {
-        Write-Host "Funcao tem um valor nulo ou vazio" -ForeGroundColor Red;
-        Pause; # to pause and alert
-        Exit;
+        Write-Host "Funcao tem um valor nulo ou vazio" -ForeGroundColor Red
+        Pause # to pause and alert
+        Exit
     }
     If ( [string]::IsNullorEmpty($ficheiro) -Or [String]::IsNullOrWhiteSpace($ficheiro) )
     {
-        $ficheiro = $ficheiroTemp;
+        $ficheiro = $ficheiroTemp
     }
 
     # [en] TODO: less could be more

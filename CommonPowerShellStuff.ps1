@@ -1,8 +1,7 @@
 # ##################################################################################################################### #
 #                                                                                                                       #
-# [en] Common Powershell stuf that might be usefull to other scripts                                                    #
-#                                                                                                                       #
-# TODO: coments in [en] and [pt]                                                                                        #
+# [en] Common Powershell stuff that might be useful to the other scripts                                                #
+# TODO: comments in [en] and [pt]                                                                                       #
 #                                                                                                                       #
 # ##################################################################################################################### #
 
@@ -37,7 +36,7 @@ Function delFicheiro
 Function permissoesFicheiro
 {
     # Setup file ACL
-    # credits: https://blog.netwrix.com/2018/04/18/how-to-manage-file-system-acls-with-powershell-scripts/
+    # INFO: https://blog.netwrix.com/2018/04/18/how-to-manage-file-system-acls-with-powershell-scripts/
     # notes on ACL
     # Access Right                          # Access Right's Name in PowerShell
     # Full Control                          # FullControl

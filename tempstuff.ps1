@@ -1,3 +1,7 @@
+# concatenate of all stuff as I test
+# will be going to main files as cleanup occurs  
+
+
 # ################################################################################################################### #
 # Elevacao de permissões para correr script em Admin                                                                  #
 # ################################################################################################################### # 
@@ -22,10 +26,8 @@ $appsdel=@(
 	"Microsoft.Office.OneNote" 
 	"Microsoft.People" 
 	"Microsoft.ZuneVideo" 
-	"Microsoft.ZuneMusic" 
-)
-$appsdelmulti=@(
-	"*xbox*" 
+    "Microsoft.ZuneMusic" 
+    "*xbox*"
 )
 
 $appsadd=@(
